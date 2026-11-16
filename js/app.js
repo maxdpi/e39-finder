@@ -6,11 +6,16 @@ const hideTestEntries = document.querySelector("#hide-test-entries");
 
 let listings = [];
 
+let editingListingId = null;
+
 hideTestEntries.addEventListener("change", renderListings);
 
 const repeatLastButton = document.querySelector("#repeat-last");
 
 repeatLastButton.addEventListener("click", function () {
+  editingListingId = null;
+  listingForm.querySelector('button[type="submit"]').textContent =
+    "Add listing";
   const lastListing = listings[listings.length - 1];
 
   if (!lastListing) {
@@ -173,7 +178,36 @@ function formatListing(listing) {
       notes.className = "listing-notes";
       notes.textContent = listing.conditionNotes || "No notes recorded.";
       item.append(notes);
+
+      if (listing.id) {
+        const updateButton = document.createElement("button");
+        updateButton.type = "button";
+        updateButton.textContent = "Update listing";
   
+        updateButton.addEventListener("click", function () {
+          listingForm.reset();
+  
+          for (const [name, value] of Object.entries(listing)) {
+            const field = listingForm.elements.namedItem(name);
+  
+            if (field && "value" in field) {
+              field.value = value ?? "";
+            }
+          }
+  
+          editingListingId = listing.id;
+  
+          listingForm.querySelector('button[type="submit"]').textContent =
+            "Save update";
+  
+          listingSummary.textContent =
+            "Editing an existing listing. Saving will add a dated observation.";
+  
+          listingForm.scrollIntoView({ behavior: "smooth" });
+        });
+  
+        item.append(updateButton);
+      }
       savedListings.append(item);
     }
   }
@@ -182,11 +216,15 @@ listingForm.addEventListener("submit", function (event) {
   event.preventDefault();
 
   const formData = new FormData(listingForm);
+  
+  const existingListing = listings.find(function (listing) {
+    return listing.id === editingListingId;
+  });
 
   const observedAt = new Date().toISOString();
   
   const listing = {
-    id: crypto.randomUUID(),
+    id: existingListing?.id ?? crypto.randomUUID(),
     url: formData.get("url").trim(),
     entryType: formData.get("entryType"),
     listingStatus: formData.get("listingStatus"),
@@ -208,11 +246,12 @@ listingForm.addEventListener("submit", function (event) {
     priceAssessment: formData.get("priceAssessment"),
     huUntil: formData.get("huUntil") || null,
     modifications: formData.get("modifications"),
-    firstObservedAt: observedAt,
+    firstObservedAt: existingListing?.firstObservedAt ?? observedAt,
     lastObservedAt: observedAt,
   };
 
   listing.observations = [
+    ...(existingListing?.observations ?? []),
     {
       observedAt,
       askingPrice: listing.price,
@@ -220,14 +259,25 @@ listingForm.addEventListener("submit", function (event) {
     },
   ];
 
-  const updatedListings = [...listings, listing];
+  const updatedListings = existingListing
+    ? listings.map(function (savedListing) {
+        return savedListing.id === existingListing.id
+          ? listing
+          : savedListing;
+      })
+    : [...listings, listing];
 
   try {
     saveListings(updatedListings);
     listings = updatedListings;
     renderListings();
     listingForm.reset();
-    listingSummary.textContent = "Listing saved in this browser.";
+    editingListingId = null;
+    listingForm.querySelector('button[type="submit"]').textContent =
+      "Add listing";
+    listingSummary.textContent = existingListing
+      ? "Listing updated. Previous observations preserved."
+      : "Listing saved in this browser.";
   } catch (error) {
     listingSummary.textContent =
       "Could not save the listing. Your form details have been kept.";

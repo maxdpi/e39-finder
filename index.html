@@ -21,6 +21,22 @@
         <h2 id="new-listing-heading">New listing</h2>
         <form id="listing-form">
           <p>
+            <label for="listing-url">Listing URL (optional)</label>
+            <input
+              id="listing-url"
+              name="url"
+              type="url"
+              placeholder="https://..."
+            >
+          </p>
+          <p>
+            <label for="entry-type">Entry type</label>
+            <select id="entry-type" name="entryType">
+              <option value="real">Real listing</option>
+              <option value="test">Fictional test</option>
+            </select>
+          </p>
+          <p>
             <label for="model">Model</label>
             <select id="model" name="model" required>
               <option value="">Choose a model</option>

@@ -118,3 +118,13 @@
   .listing-notes {
     white-space: pre-wrap;
   }
+
+  a {
+    color: #284d38;
+    text-underline-offset: 0.2em;
+  }
+  
+  a:focus-visible {
+    outline: 3px solid #3478b8;
+    outline-offset: 3px;
+  }

@@ -77,8 +77,50 @@ function formatListing(listing) {
       const item = document.createElement("li");
   
       const summary = document.createElement("p");
-      summary.textContent = formatListing(listing);
+      const entryLabel =
+      listing.entryType === "test"
+        ? "[TEST] "
+        : listing.entryType === "real"
+          ? ""
+          : "[UNCLASSIFIED] ";
+
+      summary.textContent = entryLabel + formatListing(listing);
+      
       item.append(summary);
+
+      const statusLabels = {
+        unknown: "Unknown",
+        active: "Active advertisement",
+        removed: "Removed — sale unconfirmed",
+        sold: "Confirmed sold",
+        relisted: "Relisted — same vehicle identified",
+      };
+  
+      const status = document.createElement("p");
+      status.textContent =
+        `Listing status: ${statusLabels[listing.listingStatus] ?? "Unknown"}`;
+  
+      item.append(status);
+
+      if (listing.url) {
+        try {
+          const url = new URL(listing.url);
+  
+          if (url.protocol === "https:" || url.protocol === "http:") {
+            const link = document.createElement("a");
+            link.href = url.href;
+            link.textContent = "Open original listing";
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+  
+            const linkParagraph = document.createElement("p");
+            linkParagraph.append(link);
+            item.append(linkParagraph);
+          }
+        } catch (error) {
+          console.warn("Invalid listing URL:", listing.url);
+        }
+      }
   
       const condition = document.createElement("p");
   
@@ -113,6 +155,9 @@ listingForm.addEventListener("submit", function (event) {
   const formData = new FormData(listingForm);
 
   const listing = {
+    url: formData.get("url").trim(),
+    entryType: formData.get("entryType"),
+    listingStatus: formData.get("listingStatus"),
     model: formData.get("model"),
     price: Number(formData.get("price")),
     mileage:

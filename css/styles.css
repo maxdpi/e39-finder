@@ -1,0 +1,44 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    background: #f3f4f1;
+    color: #202820;
+    font-family: system-ui, sans-serif;
+    line-height: 1.5;
+  }
+  
+  header,
+  main {
+    width: min(100% - 2rem, 56rem);
+    margin-inline: auto;
+  }
+  
+  header {
+    padding-block: 3rem 1.5rem;
+  }
+  
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    letter-spacing: -0.04em;
+  }
+  
+  h2 {
+    margin-top: 0;
+    font-size: 1.25rem;
+  }
+  
+  p {
+    color: #526052;
+  }
+  
+  section {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: #ffffff;
+    border: 1px solid #d8ded5;
+    border-radius: 0.75rem;
+  }

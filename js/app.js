@@ -6,18 +6,27 @@ const emptyListings = document.querySelector("#empty-listings");
 let listings = [];
 
 function formatListing(listing) {
-  const modelText =
-    listing.model === "other" ? "Other E39" : `BMW ${listing.model}`;
-
-  const priceText = listing.price.toLocaleString("de-DE");
-
-  const mileageText =
-    listing.mileage === null
-      ? "Mileage unknown"
-      : `${listing.mileage.toLocaleString("de-DE")} km`;
-
-  return `${modelText} · €${priceText} · ${mileageText}. Not yet evaluated.`;
-}
+    const modelText =
+      listing.model === "other" ? "Other E39" : `BMW ${listing.model}`;
+  
+    const priceText = listing.price.toLocaleString("de-DE");
+  
+    const mileageText =
+      listing.mileage === null
+        ? "Mileage unknown"
+        : `${listing.mileage.toLocaleString("de-DE")} km`;
+  
+    const evaluation = evaluateEligibility(listing);
+  
+    const details = [
+      ...evaluation.failures,
+      ...evaluation.unknowns,
+    ].join("; ");
+  
+    return `${modelText} · €${priceText} · ${mileageText}. ${evaluation.verdict}${
+      details ? `. ${details}` : ""
+    }`;
+  }
 
 function renderListings() {
   savedListings.replaceChildren();
@@ -42,6 +51,11 @@ listingForm.addEventListener("submit", function (event) {
       formData.get("mileage") === ""
         ? null
         : Number(formData.get("mileage")),
+        isE39Touring: formData.get("isE39Touring"),
+    isPetrol: formData.get("isPetrol"),
+    isManual: formData.get("isManual"),
+    severeCorrosion: formData.get("severeCorrosion"),
+    majorMechanicalDefect: formData.get("majorMechanicalDefect"),
     firstObservedAt: new Date().toISOString(),
   };
 

@@ -6,6 +6,7 @@
     <title>E39 Finder</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/storage.js" defer></script>
+    <script src="js/evaluation.js" defer></script>
     <script src="js/app.js" defer></script>
   </head>
 
@@ -53,7 +54,54 @@
               step="1"
             >
           </p>
-        
+          <fieldset>
+            <legend>Mandatory vehicle checks</legend>
+          
+            <p>
+              <label for="body-style">Is it an E39 Touring?</label>
+              <select id="body-style" name="isE39Touring">
+                <option value="unknown">Unknown</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </p>
+          
+            <p>
+              <label for="petrol">Is it petrol (Benzin)?</label>
+              <select id="petrol" name="isPetrol">
+                <option value="unknown">Unknown</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </p>
+          
+            <p>
+              <label for="manual">Is it manual (Schaltgetriebe)?</label>
+              <select id="manual" name="isManual">
+                <option value="unknown">Unknown</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </p>
+          
+            <p>
+              <label for="corrosion">Confirmed severe structural corrosion?</label>
+              <select id="corrosion" name="severeCorrosion">
+                <option value="unknown">Unknown</option>
+                <option value="yes">Yes</option>
+                <option value="no">No — checked and ruled out</option>
+              </select>
+            </p>
+          
+            <p>
+              <label for="mechanical-defect">Confirmed major mechanical defect?</label>
+              <select id="mechanical-defect" name="majorMechanicalDefect">
+                <option value="unknown">Unknown</option>
+                <option value="yes">Yes</option>
+                <option value="no">No — checked and ruled out</option>
+              </select>
+            </p>
+          </fieldset>
           <button type="submit">Add listing</button>
         </form>
         <p id="listing-summary" role="status"></p>

@@ -85,3 +85,36 @@
     outline: 3px solid #3478b8;
     outline-offset: 3px;
   }
+
+  fieldset {
+    min-width: 0;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border: 1px solid #d8ded5;
+    border-radius: 0.4rem;
+  }
+  
+  legend {
+    padding-inline: 0.5rem;
+    font-weight: 600;
+  }
+
+  textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #899589;
+    border-radius: 0.4rem;
+    background: #ffffff;
+    color: #202820;
+    font: inherit;
+    resize: vertical;
+  }
+  
+  textarea:focus-visible {
+    outline: 3px solid #3478b8;
+    outline-offset: 3px;
+  }
+
+  .listing-notes {
+    white-space: pre-wrap;
+  }

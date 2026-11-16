@@ -102,6 +102,80 @@
               </select>
             </p>
           </fieldset>
+          <fieldset>
+            <legend>Maintenance and condition</legend>
+          
+            <p>
+              <label for="maintenance-history">Maintenance history</label>
+              <select id="maintenance-history" name="maintenanceHistory">
+                <option value="unknown">Unknown</option>
+                <option value="documented">Documented with invoices or records</option>
+                <option value="claimed">Seller claims maintenance; no records seen</option>
+                <option value="limited">Limited or missing history confirmed</option>
+              </select>
+            </p>
+          
+            <p>
+              <label for="structural-condition">Structural condition</label>
+              <select id="structural-condition" name="structuralCondition">
+                <option value="unknown">Unknown — not checked</option>
+                <option value="sound">Jacking points, sills and underbody checked: sound</option>
+                <option value="surface-rust">Checked: surface rust only</option>
+                <option value="repair-needed">Structural rust repairs needed</option>
+              </select>
+            </p>
+          
+            <p>
+              <label for="mechanical-condition">Mechanical condition</label>
+              <select id="mechanical-condition" name="mechanicalCondition">
+                <option value="unknown">Unknown — not checked</option>
+                <option value="healthy">Checked: no issues identified</option>
+                <option value="minor-issues">Minor issues identified</option>
+                <option value="repair-needed">Significant repairs needed</option>
+              </select>
+            </p>
+          
+            <p>
+              <label for="condition-notes">Maintenance, defects and evidence</label>
+              <textarea
+                id="condition-notes"
+                name="conditionNotes"
+                rows="5"
+                placeholder="Record work done, dates, invoices, seller claims and unresolved issues."
+              ></textarea>
+            </p>
+          </fieldset>
+          <fieldset>
+            <legend>Price assessment, HU and modifications</legend>
+          
+            <p>
+              <label for="price-assessment">Price relative to condition</label>
+              <select id="price-assessment" name="priceAssessment">
+                <option value="unknown">Unknown — insufficient evidence</option>
+                <option value="good">Good value for the verified condition</option>
+                <option value="fair">Fair price for the verified condition</option>
+                <option value="poor">Expensive given condition or repair costs</option>
+              </select>
+            </p>
+          
+            <p>
+              <label for="hu-until">HU valid through (optional)</label>
+              <input id="hu-until" name="huUntil" type="month">
+            </p>
+          
+            <p>
+              <label for="modifications">Modifications</label>
+              <select id="modifications" name="modifications">
+                <option value="unknown">Unknown</option>
+                <option value="original">Original / unmodified</option>
+                <option value="minimal">Minimal, documented modifications</option>
+                <option value="extensive">Extensive or undocumented modifications</option>
+              </select>
+            </p>
+          </fieldset>
+          <button type="button" id="repeat-last">
+            Repeat last entry
+          </button>
           <button type="submit">Add listing</button>
         </form>
         <p id="listing-summary" role="status"></p>

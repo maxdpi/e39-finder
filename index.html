@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>E39 Finder</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script src="js/storage.js" defer></script>
     <script src="js/app.js" defer></script>
   </head>
 
@@ -60,7 +61,8 @@
 
       <section aria-labelledby="saved-listings-heading">
         <h2 id="saved-listings-heading">Saved listings</h2>
-        <p>No listings saved yet.</p>
+        <p id="empty-listings">No listings saved yet.</p>
+        <ul id="saved-listings"></ul>
       </section>
     </main>
   </body>

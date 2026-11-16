@@ -1,5 +1,34 @@
 const listingForm = document.querySelector("#listing-form");
 const listingSummary = document.querySelector("#listing-summary");
+const savedListings = document.querySelector("#saved-listings");
+const emptyListings = document.querySelector("#empty-listings");
+
+let listings = [];
+
+function formatListing(listing) {
+  const modelText =
+    listing.model === "other" ? "Other E39" : `BMW ${listing.model}`;
+
+  const priceText = listing.price.toLocaleString("de-DE");
+
+  const mileageText =
+    listing.mileage === null
+      ? "Mileage unknown"
+      : `${listing.mileage.toLocaleString("de-DE")} km`;
+
+  return `${modelText} · €${priceText} · ${mileageText}. Not yet evaluated.`;
+}
+
+function renderListings() {
+  savedListings.replaceChildren();
+  emptyListings.hidden = listings.length > 0;
+
+  for (const listing of listings) {
+    const item = document.createElement("li");
+    item.textContent = formatListing(listing);
+    savedListings.append(item);
+  }
+}
 
 listingForm.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -13,18 +42,30 @@ listingForm.addEventListener("submit", function (event) {
       formData.get("mileage") === ""
         ? null
         : Number(formData.get("mileage")),
+    firstObservedAt: new Date().toISOString(),
   };
 
-  const modelText =
-    listing.model === "other" ? "Other E39" : `BMW ${listing.model}`;
+  const updatedListings = [...listings, listing];
 
-  const priceText = listing.price.toLocaleString("de-DE");
-
-  const mileageText =
-    listing.mileage === null
-      ? "Mileage unknown"
-      : `${listing.mileage.toLocaleString("de-DE")} km`;
-
-  listingSummary.textContent =
-    `${modelText} · €${priceText} · ${mileageText}. Not yet evaluated.`;
+  try {
+    saveListings(updatedListings);
+    listings = updatedListings;
+    renderListings();
+    listingForm.reset();
+    listingSummary.textContent = "Listing saved in this browser.";
+  } catch (error) {
+    listingSummary.textContent =
+      "Could not save the listing. Your form details have been kept.";
+    console.error(error);
+  }
 });
+
+try {
+  listings = loadListings();
+  renderListings();
+} catch (error) {
+  listingSummary.textContent =
+    "Could not load saved listings. Adding listings is disabled to protect existing data.";
+  listingForm.querySelector('button[type="submit"]').disabled = true;
+  console.error(error);
+}

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>E39 Finder</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script src="js/app.js" defer></script>
   </head>
 
   <body>
@@ -16,7 +17,45 @@
     <main>
       <section aria-labelledby="new-listing-heading">
         <h2 id="new-listing-heading">New listing</h2>
-        <p>Enter a vehicle’s details to begin an evaluation.</p>
+        <form id="listing-form">
+          <p>
+            <label for="model">Model</label>
+            <select id="model" name="model" required>
+              <option value="">Choose a model</option>
+              <option value="520i">520i</option>
+              <option value="523i">523i</option>
+              <option value="525i">525i</option>
+              <option value="528i">528i</option>
+              <option value="other">Other E39</option>
+            </select>
+          </p>
+        
+          <p>
+            <label for="price">Asking price (€)</label>
+            <input
+              id="price"
+              name="price"
+              type="number"
+              min="0"
+              step="1"
+              required
+            >
+          </p>
+        
+          <p>
+            <label for="mileage">Mileage (km, optional)</label>
+            <input
+              id="mileage"
+              name="mileage"
+              type="number"
+              min="0"
+              step="1"
+            >
+          </p>
+        
+          <button type="submit">Add listing</button>
+        </form>
+        <p id="listing-summary" role="status"></p>
       </section>
 
       <section aria-labelledby="saved-listings-heading">

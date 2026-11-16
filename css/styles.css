@@ -42,3 +42,46 @@
     border: 1px solid #d8ded5;
     border-radius: 0.75rem;
   }
+
+  label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: #202820;
+    font-weight: 600;
+  }
+  
+  input,
+  select,
+  button {
+    font: inherit;
+  }
+  
+  input,
+  select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #899589;
+    border-radius: 0.4rem;
+    background: #ffffff;
+    color: #202820;
+  }
+  
+  button {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 0.4rem;
+    background: #284d38;
+    color: #ffffff;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background: #1b3828;
+  }
+  
+  input:focus-visible,
+  select:focus-visible,
+  button:focus-visible {
+    outline: 3px solid #3478b8;
+    outline-offset: 3px;
+  }

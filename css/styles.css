@@ -128,3 +128,8 @@
     outline: 3px solid #3478b8;
     outline-offset: 3px;
   }
+
+  input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+  }

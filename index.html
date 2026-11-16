@@ -37,6 +37,16 @@
             </select>
           </p>
           <p>
+            <label for="listing-status">Listing status</label>
+            <select id="listing-status" name="listingStatus">
+              <option value="unknown">Unknown</option>
+              <option value="active">Active advertisement</option>
+              <option value="removed">Removed — sale unconfirmed</option>
+              <option value="sold">Confirmed sold</option>
+              <option value="relisted">Relisted — same vehicle identified</option>
+            </select>
+          </p>
+          <p>
             <label for="model">Model</label>
             <select id="model" name="model" required>
               <option value="">Choose a model</option>
@@ -199,6 +209,12 @@
 
       <section aria-labelledby="saved-listings-heading">
         <h2 id="saved-listings-heading">Saved listings</h2>
+        <p>
+          <label>
+            <input type="checkbox" id="hide-test-entries">
+            Hide test entries
+          </label>
+        </p>
         <p id="empty-listings">No listings saved yet.</p>
         <ul id="saved-listings"></ul>
       </section>

@@ -2,8 +2,11 @@ const listingForm = document.querySelector("#listing-form");
 const listingSummary = document.querySelector("#listing-summary");
 const savedListings = document.querySelector("#saved-listings");
 const emptyListings = document.querySelector("#empty-listings");
+const hideTestEntries = document.querySelector("#hide-test-entries");
 
 let listings = [];
+
+hideTestEntries.addEventListener("change", renderListings);
 
 const repeatLastButton = document.querySelector("#repeat-last");
 
@@ -59,7 +62,23 @@ function formatListing(listing) {
 
   function renderListings() {
     savedListings.replaceChildren();
-    emptyListings.hidden = listings.length > 0;
+    const visibleListings = listings.filter(function (listing) {
+        const isTest =
+          listing.entryType === "test" ||
+          (
+            listing.entryType == null &&
+            /^TEST\b/i.test((listing.conditionNotes ?? "").trim())
+          );
+    
+        return !hideTestEntries.checked || !isTest;
+      });
+    
+      emptyListings.hidden = visibleListings.length > 0;
+    
+      emptyListings.textContent =
+        listings.length === 0
+          ? "No listings saved yet."
+          : "No listings match the current filter.";
   
     const conditionLabels = {
       unknown: "Unknown",
@@ -73,7 +92,7 @@ function formatListing(listing) {
       "minor-issues": "Minor issues identified",
     };
   
-    for (const listing of listings) {
+    for (const listing of visibleListings) {
       const item = document.createElement("li");
   
       const summary = document.createElement("p");
@@ -85,7 +104,7 @@ function formatListing(listing) {
           : "[UNCLASSIFIED] ";
 
       summary.textContent = entryLabel + formatListing(listing);
-      
+
       item.append(summary);
 
       const statusLabels = {
@@ -101,6 +120,16 @@ function formatListing(listing) {
         `Listing status: ${statusLabels[listing.listingStatus] ?? "Unknown"}`;
   
       item.append(status);
+
+      const history = document.createElement("p");
+      const observationCount = listing.observations?.length ?? 0;
+  
+      history.textContent =
+        observationCount > 0
+          ? `Recorded observations: ${observationCount}`
+          : "Observation history not yet recorded.";
+  
+      item.append(history);
 
       if (listing.url) {
         try {
@@ -154,7 +183,10 @@ listingForm.addEventListener("submit", function (event) {
 
   const formData = new FormData(listingForm);
 
+  const observedAt = new Date().toISOString();
+  
   const listing = {
+    id: crypto.randomUUID(),
     url: formData.get("url").trim(),
     entryType: formData.get("entryType"),
     listingStatus: formData.get("listingStatus"),
@@ -176,8 +208,17 @@ listingForm.addEventListener("submit", function (event) {
     priceAssessment: formData.get("priceAssessment"),
     huUntil: formData.get("huUntil") || null,
     modifications: formData.get("modifications"),
-    firstObservedAt: new Date().toISOString(),
+    firstObservedAt: observedAt,
+    lastObservedAt: observedAt,
   };
+
+  listing.observations = [
+    {
+      observedAt,
+      askingPrice: listing.price,
+      status: listing.listingStatus,
+    },
+  ];
 
   const updatedListings = [...listings, listing];
 

@@ -133,3 +133,42 @@
     width: auto;
     margin-right: 0.5rem;
   }
+
+  #saved-listings {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .listing-card {
+    min-width: 0;
+    padding: 1.25rem;
+    border: 1px solid #d8ded5;
+    border-radius: 0.5rem;
+    overflow-wrap: anywhere;
+  }
+  
+  .listing-card > p:first-child {
+    margin-top: 0;
+    color: #202820;
+    font-weight: 700;
+  }
+  
+  .listing-card details {
+    margin-block: 1rem;
+  }
+  
+  .listing-card summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .listing-card blockquote {
+    margin-inline: 1rem;
+    padding-left: 1rem;
+    border-left: 3px solid #d8ded5;
+  }
+
+  

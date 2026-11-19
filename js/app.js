@@ -191,6 +191,8 @@ reviewDescriptionButton.addEventListener("click", function () {
   for (const topic of topics) {
     const item = document.createElement("li");
 
+    item.className = "listing-card";
+
     const label = document.createElement("p");
     label.textContent = topic.label;
     item.append(label);
@@ -289,6 +291,7 @@ function formatListing(listing) {
   
     for (const listing of visibleListings) {
       const item = document.createElement("li");
+      item.className = "listing-card";
   
       const summary = document.createElement("p");
       const entryLabel =

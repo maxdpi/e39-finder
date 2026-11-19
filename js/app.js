@@ -7,6 +7,11 @@ const exportButton = document.querySelector("#export-listings");
 const importInput = document.querySelector("#import-backup");
 const importSummary = document.querySelector("#import-summary");
 const restoreButton = document.querySelector("#restore-backup");
+const reviewDescriptionButton =
+  document.querySelector("#review-description");
+
+const descriptionReview =
+  document.querySelector("#description-review");
 
 let listings = [];
 
@@ -154,6 +159,48 @@ repeatLastButton.addEventListener("click", function () {
 
   listingSummary.textContent =
     "Last entry copied into the form. Adjust it, then click Add listing.";
+});
+
+reviewDescriptionButton.addEventListener("click", function () {
+  const description =
+    listingForm.elements.namedItem("sellerDescription").value.trim();
+
+  descriptionReview.replaceChildren();
+
+  const message = document.createElement("p");
+
+  if (!description) {
+    message.textContent = "Paste a seller description first.";
+    descriptionReview.append(message);
+    return;
+  }
+
+  const topics = detectDescriptionTopics(description);
+
+  message.textContent = topics.length > 0
+    ? "Topics detected for review. These are seller statements, not verified findings. No scores or fields have been changed."
+    : "No supported terms detected. This does not mean the vehicle has no defects.";
+
+  descriptionReview.append(message);
+
+  const topicList = document.createElement("ul");
+
+  for (const topic of topics) {
+    const item = document.createElement("li");
+    item.textContent = topic;
+    topicList.append(item);
+  }
+
+  descriptionReview.append(topicList);
+});
+listingForm.elements
+  .namedItem("sellerDescription")
+  .addEventListener("input", function () {
+    descriptionReview.replaceChildren();
+  });
+
+listingForm.addEventListener("reset", function () {
+  descriptionReview.replaceChildren();
 });
 
 function formatListing(listing) {

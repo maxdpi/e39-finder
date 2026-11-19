@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/storage.js" defer></script>
     <script src="js/evaluation.js" defer></script>
+    <script src="js/extraction.js" defer></script>
     <script src="js/app.js" defer></script>
   </head>
 
@@ -89,6 +90,11 @@
               placeholder="Paste the original advertisement text here, including German maintenance descriptions and defects."
             ></textarea>
           </p>
+          <button type="button" id="review-description">
+            Review description
+          </button>
+          
+          <div id="description-review" role="status"></div>
           <fieldset>            
             <legend>Mandatory vehicle checks</legend>          
             <p>

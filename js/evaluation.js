@@ -96,6 +96,10 @@ function evaluateEligibility(listing) {
         unknowns.push(`${category.label} unknown`);
       }
     }
+
+    if (listing.maintenanceHistory === "claimed") {
+      unknowns.push("Seller maintenance claims need supporting records");
+    }
   
     if (Number.isFinite(listing.mileage) && listing.mileage >= 0) {
       if (listing.mileage <= 270000) {

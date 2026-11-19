@@ -30,6 +30,9 @@ INVESTIGATE unless a confirmed mandatory disqualification requires PASS.
 Seller claims receive partial maintenance credit but must be labelled
 as unverified.
 
+Seller-claimed maintenance receives 8 provisional points, but the verdict
+remains INVESTIGATE until the maintenance evidence is assessed.
+
 ## Verdicts
 
 Confirmed mandatory disqualification: PASS, regardless of score.

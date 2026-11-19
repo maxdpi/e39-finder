@@ -40,7 +40,7 @@ function validateBackupListings(listings) {
     "maintenanceHistory", "structuralCondition",
     "mechanicalCondition", "conditionNotes",
     "priceAssessment", "huUntil", "modifications",
-    "firstObservedAt", "lastObservedAt",
+    "firstObservedAt", "lastObservedAt", "sellerDescription",
   ];
 
   for (const [index, listing] of listings.entries()) {

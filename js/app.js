@@ -329,6 +329,21 @@ function formatListing(listing) {
       notes.textContent = listing.conditionNotes || "No notes recorded.";
       item.append(notes);
 
+      if (listing.sellerDescription) {
+        const descriptionDetails = document.createElement("details");
+        const descriptionHeading = document.createElement("summary");
+  
+        descriptionHeading.textContent = "Original seller description";
+        descriptionDetails.append(descriptionHeading);
+  
+        const description = document.createElement("p");
+        description.className = "listing-notes";
+        description.textContent = listing.sellerDescription;
+  
+        descriptionDetails.append(description);
+        item.append(descriptionDetails);
+      }
+
       if (listing.id) {
         const updateButton = document.createElement("button");
         updateButton.type = "button";
@@ -380,6 +395,7 @@ listingForm.addEventListener("submit", function (event) {
     listingStatus: formData.get("listingStatus"),
     model: formData.get("model"),
     price: Number(formData.get("price")),
+    
     mileage:
       formData.get("mileage") === ""
         ? null
@@ -398,6 +414,8 @@ listingForm.addEventListener("submit", function (event) {
     modifications: formData.get("modifications"),
     firstObservedAt: existingListing?.firstObservedAt ?? observedAt,
     lastObservedAt: observedAt,
+    sellerDescription: formData.get("sellerDescription").trim(),
+    
   };
 
   listing.observations = [

@@ -58,6 +58,29 @@
               <option value="other">Other E39</option>
             </select>
           </p>
+
+          <p>
+            <label for="registration-year">First registration year (optional)</label>
+            <input
+              id="registration-year"
+              name="registrationYear"
+              type="number"
+              min="1900"
+              max="2100"
+              step="1"
+              placeholder="2002"
+            >
+          </p>
+          
+          <p>
+            <label for="location">Location (optional)</label>
+            <input
+              id="location"
+              name="location"
+              type="text"
+              placeholder="City or postcode"
+            >
+          </p>
         
           <p>
             <label for="price">Asking price (€)</label>
@@ -213,10 +236,36 @@
               </select>
             </p>
           </fieldset>
+          <fieldset>
+            <legend>Emissions and access restrictions</legend>
+          
+            <p>
+              <label for="emissions-review">Restriction review</label>
+              <select id="emissions-review" name="emissionsReview">
+                <option value="unknown">Not checked</option>
+                <option value="concern">Potential access restriction identified</option>
+                <option value="checked">Checked for the destinations recorded below</option>
+              </select>
+            </p>
+          
+            <p>
+              <label for="emissions-notes">Destinations, findings and sources</label>
+              <textarea
+                id="emissions-notes"
+                name="emissionsNotes"
+                rows="3"
+                placeholder="Record the cities, vehicle emissions details, sources and date checked."
+              ></textarea>
+            </p>
+          </fieldset>
+          
           <button type="button" id="repeat-last">
             Repeat last entry
           </button>
           <button type="submit">Add listing</button>
+          <button type="button" id="cancel-update" hidden>
+            Cancel update
+          </button>
         </form>
         <p id="listing-summary" role="status"></p>
       </section>

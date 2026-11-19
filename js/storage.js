@@ -41,6 +41,7 @@ function validateBackupListings(listings) {
     "mechanicalCondition", "conditionNotes",
     "priceAssessment", "huUntil", "modifications",
     "firstObservedAt", "lastObservedAt", "sellerDescription",
+    "emissionsReview", "emissionsNotes",
   ];
 
   for (const [index, listing] of listings.entries()) {
@@ -56,6 +57,17 @@ function validateBackupListings(listings) {
       )
     ) {
       throw new Error(`${label}: invalid model, price or mileage.`);
+    }
+
+    if (
+      listing.registrationYear != null &&
+      (
+        !Number.isInteger(listing.registrationYear) ||
+        listing.registrationYear < 1900 ||
+        listing.registrationYear > 2100
+      )
+    ) {
+      throw new Error(`${label}: invalid registration year.`);
     }
 
     for (const field of textFields) {

@@ -7,6 +7,7 @@ const exportButton = document.querySelector("#export-listings");
 const importInput = document.querySelector("#import-backup");
 const importSummary = document.querySelector("#import-summary");
 const restoreButton = document.querySelector("#restore-backup");
+const cancelUpdateButton = document.querySelector("#cancel-update");
 const reviewDescriptionButton =
   document.querySelector("#review-description");
 
@@ -79,6 +80,7 @@ restoreButton.addEventListener("click", function () {
 
     listings = restoredListings;
     editingListingId = null;
+    cancelUpdateButton.hidden = true;
 
     listingForm.reset();
 
@@ -138,6 +140,7 @@ const repeatLastButton = document.querySelector("#repeat-last");
 
 repeatLastButton.addEventListener("click", function () {
   editingListingId = null;
+  cancelUpdateButton.hidden = true;
   listingForm.querySelector('button[type="submit"]').textContent =
     "Add listing";
   const lastListing = listings[listings.length - 1];
@@ -211,6 +214,17 @@ listingForm.elements
 
 listingForm.addEventListener("reset", function () {
   descriptionReview.replaceChildren();
+});
+
+cancelUpdateButton.addEventListener("click", function () {
+  editingListingId = null;
+  listingForm.reset();
+
+  listingForm.querySelector('button[type="submit"]').textContent =
+    "Add listing";
+
+  cancelUpdateButton.hidden = true;
+  listingSummary.textContent = "Update cancelled. Saved data unchanged.";
 });
 
 function formatListing(listing) {
@@ -287,6 +301,36 @@ function formatListing(listing) {
       summary.textContent = entryLabel + formatListing(listing);
 
       item.append(summary);
+      const vehicleDetails = document.createElement("p");
+
+      const yearText = listing.registrationYear ?? "Unknown";
+      const locationText = listing.location || "Unknown";
+  
+      vehicleDetails.textContent =
+        `First registration year: ${yearText}. Location: ${locationText}.`;
+  
+      item.append(vehicleDetails);
+
+      const emissionsLabels = {
+        unknown: "Not checked",
+        concern: "Potential access restriction identified",
+        checked: "Checked for recorded destinations",
+      };
+  
+      const emissions = document.createElement("p");
+      emissions.textContent =
+        `Emissions/access review: ${
+          emissionsLabels[listing.emissionsReview] ?? "Not checked"
+        }.`;
+  
+      item.append(emissions);
+  
+      if (listing.emissionsNotes) {
+        const emissionsNotes = document.createElement("p");
+        emissionsNotes.className = "listing-notes";
+        emissionsNotes.textContent = listing.emissionsNotes;
+        item.append(emissionsNotes);
+      }      
 
       const statusLabels = {
         unknown: "Unknown",
@@ -311,6 +355,33 @@ function formatListing(listing) {
           : "Observation history not yet recorded.";
   
       item.append(history);
+      const observationPeriod = document.createElement("p");
+
+      const firstSeen = Date.parse(listing.firstObservedAt);
+      const lastSeen = Date.parse(listing.lastObservedAt);
+  
+      if (
+        Number.isFinite(firstSeen) &&
+        Number.isFinite(lastSeen) &&
+        lastSeen >= firstSeen
+      ) {
+        const firstDate = new Date(firstSeen).toLocaleDateString("en-GB");
+        const lastDate = new Date(lastSeen).toLocaleDateString("en-GB");
+  
+        const millisecondsPerDay = 24 * 60 * 60 * 1000;
+        const daysObserved = Math.floor(
+          (lastSeen - firstSeen) / millisecondsPerDay
+        );
+  
+        observationPeriod.textContent =
+          `First observed: ${firstDate}. ` +
+          `Last observed: ${lastDate}. ` +
+          `Observation span: ${daysObserved} complete days.`;
+      } else {
+        observationPeriod.textContent = "Observation period unknown.";
+      }
+  
+      item.append(observationPeriod);
 
       if (observationCount > 0) {
         const historyDetails = document.createElement("details");
@@ -418,6 +489,7 @@ function formatListing(listing) {
           }
   
           editingListingId = listing.id;
+          cancelUpdateButton.hidden = false;
   
           listingForm.querySelector('button[type="submit"]').textContent =
             "Save update";
@@ -452,6 +524,11 @@ listingForm.addEventListener("submit", function (event) {
     listingStatus: formData.get("listingStatus"),
     model: formData.get("model"),
     price: Number(formData.get("price")),
+    registrationYear:
+    formData.get("registrationYear") === ""
+      ? null
+      : Number(formData.get("registrationYear")),
+    location: formData.get("location").trim(),
     
     mileage:
       formData.get("mileage") === ""
@@ -472,6 +549,8 @@ listingForm.addEventListener("submit", function (event) {
     firstObservedAt: existingListing?.firstObservedAt ?? observedAt,
     lastObservedAt: observedAt,
     sellerDescription: formData.get("sellerDescription").trim(),
+    emissionsReview: formData.get("emissionsReview"),
+    emissionsNotes: formData.get("emissionsNotes").trim(),
     
   };
 
@@ -498,6 +577,7 @@ listingForm.addEventListener("submit", function (event) {
     renderListings();
     listingForm.reset();
     editingListingId = null;
+    cancelUpdateButton.hidden = true;
     listingForm.querySelector('button[type="submit"]').textContent =
       "Add listing";
     listingSummary.textContent = existingListing

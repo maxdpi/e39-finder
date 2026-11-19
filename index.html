@@ -209,6 +209,21 @@
 
       <section aria-labelledby="saved-listings-heading">
         <h2 id="saved-listings-heading">Saved listings</h2>
+        <button type="button" id="export-listings">
+          Export backup
+        </button>
+        <p>
+          <label for="import-backup">Select a backup to restore</label>
+          <input
+            id="import-backup"
+            type="file"
+            accept=".json,application/json"
+          >
+        </p>        
+        <p id="import-summary" role="status"></p>
+        <button type="button" id="restore-backup" disabled>
+          Restore selected backup
+        </button>
         <p>
           <label>
             <input type="checkbox" id="hide-test-entries">

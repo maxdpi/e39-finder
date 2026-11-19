@@ -3,10 +3,129 @@ const listingSummary = document.querySelector("#listing-summary");
 const savedListings = document.querySelector("#saved-listings");
 const emptyListings = document.querySelector("#empty-listings");
 const hideTestEntries = document.querySelector("#hide-test-entries");
+const exportButton = document.querySelector("#export-listings");
+const importInput = document.querySelector("#import-backup");
+const importSummary = document.querySelector("#import-summary");
+const restoreButton = document.querySelector("#restore-backup");
 
 let listings = [];
 
 let editingListingId = null;
+
+let pendingBackup = null;
+
+importInput.addEventListener("change", async function () {
+  restoreButton.disabled = true;
+  pendingBackup = null;
+  importSummary.textContent = "";
+
+  const file = importInput.files[0];
+
+  if (!file) {
+    return;
+  }
+
+  try {
+    const text = await file.text();
+    const backup = JSON.parse(text);
+
+    if (
+      backup?.app !== "E39 Finder" ||
+      backup.version !== 1 ||
+      !Array.isArray(backup.listings)
+    ) {
+      throw new Error("Unsupported backup format.");
+    }
+
+    validateBackupListings(backup.listings);
+
+    pendingBackup = backup;
+    restoreButton.disabled = false;
+
+    importSummary.textContent =
+      `Backup selected: ${backup.listings.length} listings. ` +
+      "Nothing has been restored yet.";
+  } catch (error) {
+    importSummary.textContent = `Backup rejected: ${error.message}`;
+    console.error(error);
+  }
+});
+
+restoreButton.addEventListener("click", function () {
+  if (!pendingBackup) {
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Replace your ${listings.length} current listings with ` +
+    `${pendingBackup.listings.length} listings from this backup? ` +
+    "Export your current data first if you want to keep it."
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    const restoredListings = pendingBackup.listings;
+
+    validateBackupListings(restoredListings);
+    saveListings(restoredListings);
+
+    listings = restoredListings;
+    editingListingId = null;
+
+    listingForm.reset();
+
+    const submitButton =
+      listingForm.querySelector('button[type="submit"]');
+
+    submitButton.disabled = false;
+    submitButton.textContent = "Add listing";
+
+    renderListings();
+
+    pendingBackup = null;
+    importInput.value = "";
+    restoreButton.disabled = true;
+
+    listingSummary.textContent = "";
+    importSummary.textContent =
+      `Restored ${listings.length} listings from backup.`;
+  } catch (error) {
+    importSummary.textContent = `Restore failed: ${error.message}`;
+    console.error(error);
+  }
+});
+
+exportButton.addEventListener("click", function () {
+    const exportedAt = new Date().toISOString();
+  
+    const backup = {
+      app: "E39 Finder",
+      version: 1,
+      exportedAt,
+      listings,
+    };
+  
+    const json = JSON.stringify(backup, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const downloadUrl = URL.createObjectURL(blob);
+  
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = `e39-finder-backup-${exportedAt.slice(0, 10)}.json`;
+  
+    document.body.append(link);
+    link.click();
+    link.remove();
+  
+    setTimeout(function () {
+      URL.revokeObjectURL(downloadUrl);
+    }, 1000);
+  
+    listingSummary.textContent = "Backup download requested.";
+  });
 
 hideTestEntries.addEventListener("change", renderListings);
 
@@ -135,6 +254,37 @@ function formatListing(listing) {
           : "Observation history not yet recorded.";
   
       item.append(history);
+
+      if (observationCount > 0) {
+        const historyDetails = document.createElement("details");
+        const historyHeading = document.createElement("summary");
+        historyHeading.textContent = "View price and status history";
+        historyDetails.append(historyHeading);
+  
+        const observationList = document.createElement("ul");
+  
+        for (const observation of listing.observations) {
+          const observationItem = document.createElement("li");
+  
+          const dateText = new Date(
+            observation.observedAt
+          ).toLocaleString("en-GB");
+  
+          const priceText =
+            observation.askingPrice.toLocaleString("de-DE");
+  
+          const statusText =
+            statusLabels[observation.status] ?? "Unknown";
+  
+          observationItem.textContent =
+            `${dateText} · Asking price: €${priceText} · ${statusText}`;
+  
+          observationList.append(observationItem);
+        }
+  
+        historyDetails.append(observationList);
+        item.append(historyDetails);
+      }
 
       if (listing.url) {
         try {

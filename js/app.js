@@ -187,7 +187,17 @@ reviewDescriptionButton.addEventListener("click", function () {
 
   for (const topic of topics) {
     const item = document.createElement("li");
-    item.textContent = topic;
+
+    const label = document.createElement("p");
+    label.textContent = topic.label;
+    item.append(label);
+
+    for (const line of topic.evidence) {
+      const quote = document.createElement("blockquote");
+      quote.textContent = line;
+      item.append(quote);
+    }
+
     topicList.append(item);
   }
 

@@ -26,11 +26,27 @@ function detectDescriptionTopics(description) {
       },
     ];
   
-    return rules
-      .filter(function (rule) {
-        return rule.pattern.test(description);
-      })
-      .map(function (rule) {
-        return rule.label;
+    const lines = description
+    .split(/\r?\n/)
+    .map(function (line) {
+      return line.trim();
+    })
+    .filter(function (line) {
+      return line !== "";
+    });
+
+  return rules
+    .filter(function (rule) {
+      return rule.pattern.test(description);
+    })
+    .map(function (rule) {
+      const evidence = lines.filter(function (line) {
+        return rule.pattern.test(line);
       });
-  }
+
+      return {
+        label: rule.label,
+        evidence,
+      };
+    });
+}

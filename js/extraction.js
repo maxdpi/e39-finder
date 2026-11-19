@@ -50,3 +50,38 @@ function detectDescriptionTopics(description) {
       };
     });
 }
+
+function extractHuSuggestion(description) {
+    const pattern =
+      /\b(?:HU|TÜV|TUEV)\s*(?:ist\s*)?(?:(?:bis|fällig|faellig)\s*:?\s*)?(0?[1-9]|1[0-2])\s*[/.]\s*(20\d{2}|\d{2})\b/gi;
+  
+    const matches = [...description.matchAll(pattern)];
+  
+    if (matches.length === 0) {
+      return null;
+    }
+  
+    const suggestions = matches.map(function (match) {
+      const month = match[1].padStart(2, "0");
+      const year = match[2].length === 2
+        ? `20${match[2]}`
+        : match[2];
+  
+      return {
+        value: `${year}-${month}`,
+        evidence: match[0],
+      };
+    });
+  
+    const dates = new Set(
+      suggestions.map(function (suggestion) {
+        return suggestion.value;
+      })
+    );
+  
+    return {
+      suggestions,
+      needsReview: true,
+      conflicting: dates.size > 1,
+    };
+  }

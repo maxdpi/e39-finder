@@ -207,7 +207,66 @@ reviewDescriptionButton.addEventListener("click", function () {
   }
 
   descriptionReview.append(topicList);
+
+  const huResult = extractHuSuggestion(description);
+
+  if (huResult) {
+    const heading = document.createElement("p");
+    heading.textContent = huResult.conflicting
+      ? "Different HU dates detected — check which one applies."
+      : "Possible HU expiry — verify before entering it in the form.";
+
+    descriptionReview.append(heading);
+
+    for (const suggestion of huResult.suggestions) {
+      const result = document.createElement("p");
+      result.textContent =
+        `Suggested HU: ${suggestion.value}. ` +
+        `Source wording: “${suggestion.evidence}”`;
+
+      descriptionReview.append(result);
+    }
+  }
 });
+
+const huResult = extractHuSuggestion(description);
+
+if (huResult) {
+  const heading = document.createElement("p");
+  heading.textContent = huResult.conflicting
+    ? "Different HU dates detected — check which one applies."
+    : "Possible HU expiry — verify before entering it in the form.";
+
+  descriptionReview.append(heading);
+
+  for (const suggestion of huResult.suggestions) {
+    const result = document.createElement("p");
+    result.textContent =
+      `Suggested HU: ${suggestion.value}. ` +
+      `Source wording: “${suggestion.evidence}”`;
+
+    descriptionReview.append(result);
+    const huResult = extractHuSuggestion(description);
+
+    if (huResult) {
+      const heading = document.createElement("p");
+      heading.textContent = huResult.conflicting
+        ? "Different HU dates detected — check which one applies."
+        : "Possible HU expiry — verify before entering it in the form.";
+  
+      descriptionReview.append(heading);
+  
+      for (const suggestion of huResult.suggestions) {
+        const result = document.createElement("p");
+        result.textContent =
+          `Suggested HU: ${suggestion.value}. ` +
+          `Source wording: “${suggestion.evidence}”`;
+  
+        descriptionReview.append(result);
+      }
+    }
+  }
+}
 listingForm.elements
   .namedItem("sellerDescription")
   .addEventListener("input", function () {
